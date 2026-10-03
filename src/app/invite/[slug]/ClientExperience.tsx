@@ -130,24 +130,18 @@ export function ClientExperience({ invitation }: { invitation: InvitationData })
         <div className="relative z-10 space-y-8 max-w-3xl w-full flex flex-col items-center">
           
           <FadeIn delay={0.2}>
-            <div className="text-xs md:text-sm uppercase tracking-[0.4em] text-ash font-medium">
+            <div className="text-xs md:text-sm uppercase tracking-[0.4em] text-ash font-medium mb-1">
               CREATED BY
             </div>
           </FadeIn>
 
           <FadeIn delay={0.6}>
-            <div className="text-3xl md:text-4xl font-bold tracking-[0.2em] text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-              ABZY
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={1.2}>
             <div 
-              className="my-2 relative perspective-1000"
+              className="my-3 relative perspective-1000 flex justify-center items-center"
               style={{ perspective: '1000px' }}
             >
               <div 
-                className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border border-white/20 shadow-[0_0_40px_rgba(255,255,255,0.15)] motion-reduce:animate-none"
+                className="w-24 h-24 md:w-32 md:h-32 motion-reduce:animate-none flex justify-center items-center"
                 style={{
                   animation: 'floatLogo 6s ease-in-out infinite',
                   transformStyle: 'preserve-3d'
@@ -155,11 +149,17 @@ export function ClientExperience({ invitation }: { invitation: InvitationData })
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
-                  src="/logo.jpg" 
+                  src="/logo-transparent.png" 
                   alt="ABZY Logo" 
-                  className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110" 
+                  className="w-full h-full object-contain transition-transform duration-1000 hover:scale-105 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)] brightness-110" 
                 />
               </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={1.2}>
+            <div className="text-4xl md:text-5xl font-black tracking-[0.25em] text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.4)] mt-1">
+              ABZY
             </div>
           </FadeIn>
 
