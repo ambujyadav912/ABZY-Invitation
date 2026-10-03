@@ -86,44 +86,89 @@ export function ClientExperience({ invitation }: { invitation: InvitationData })
     return (
       <div className="min-h-[100dvh] bg-obsidian text-white flex flex-col items-center justify-center p-6 text-center relative overflow-hidden perspective-1000">
         
-        {/* Background ABZY Animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-          <div className="absolute inset-0 bg-obsidian" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a1a24] via-obsidian to-obsidian" />
+        {/* Background ABZY Cinematic 3D Environment */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none bg-[#08080a]" style={{ perspective: '1200px' }}>
+          {/* Deep dark gradient with subtle blue/champagne highlights */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#131520] via-[#08080a] to-[#030303]" />
           
-          <div className="absolute top-0 left-0 w-full h-full opacity-30">
-            <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] bg-blue-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite] motion-reduce:animate-none" />
-            <div className="absolute top-[60%] -right-[10%] w-[60vw] h-[60vw] bg-white/5 rounded-full blur-[120px] animate-[pulse_12s_ease-in-out_infinite] motion-reduce:animate-none" />
+          <div className="absolute top-[10%] -left-[10%] w-[50vw] h-[50vw] bg-blue-500/10 rounded-full blur-[100px] animate-[pulse_10s_ease-in-out_infinite] motion-reduce:animate-none" />
+          <div className="absolute bottom-[20%] -right-[10%] w-[40vw] h-[40vw] bg-amber-500/5 rounded-full blur-[120px] animate-[pulse_14s_ease-in-out_infinite] motion-reduce:animate-none" />
+          
+          {/* BACKGROUND LAYER: Faint embossed typography */}
+          <div className="absolute inset-0 opacity-[0.015] motion-reduce:opacity-[0.01]">
+            <div className="absolute top-[20%] left-[5%] text-[25vw] font-black tracking-tighter" style={{ animation: 'float3D-1 40s infinite linear' }}>A</div>
+            <div className="absolute top-[60%] left-[65%] text-[20vw] font-black tracking-widest hidden md:block" style={{ animation: 'float3D-2 45s infinite linear reverse' }}>B</div>
+            <div className="absolute top-[10%] left-[75%] text-[15vw] font-black" style={{ animation: 'float3D-3 35s infinite linear' }}>Z</div>
+            <div className="absolute top-[70%] left-[10%] text-[18vw] font-black hidden md:block" style={{ animation: 'float3D-4 50s infinite linear reverse' }}>Y</div>
           </div>
 
-          <div className="absolute inset-0 opacity-40 motion-reduce:hidden">
-            <div className="absolute top-[20%] left-[30%] w-2 h-2 bg-white rounded-full blur-[2px] animate-[pulse_3s_ease-in-out_infinite]" />
-            <div className="absolute top-[70%] left-[20%] w-1.5 h-1.5 bg-blue-300 rounded-full blur-[1px] animate-[pulse_4s_ease-in-out_infinite_1s]" />
-            <div className="absolute top-[40%] right-[30%] w-2.5 h-2.5 bg-white rounded-full blur-[2px] animate-[pulse_5s_ease-in-out_infinite_2s]" />
-            <div className="absolute bottom-[20%] right-[20%] w-2 h-2 bg-blue-200 rounded-full blur-[2px] animate-[pulse_3s_ease-in-out_infinite_3s]" />
-          </div>
-
-          <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] motion-reduce:opacity-[0.02]">
-            <div 
-              className="text-[35vw] font-black text-white tracking-widest motion-reduce:transform-none"
-              style={{
-                animation: 'slowPan 30s ease-in-out infinite alternate',
-              }}
-            >
+          {/* MIDDLE LAYER: Small illuminated 3D logos / wordmarks */}
+          <div className="absolute inset-0 opacity-20 motion-reduce:hidden">
+            <div className="absolute top-[15%] left-[20%] w-12 h-12 md:w-16 md:h-16 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ animation: 'float3D-2 30s infinite ease-in-out' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-transparent.png" className="w-full h-full object-contain brightness-150" alt="" />
+            </div>
+            <div className="absolute bottom-[25%] right-[15%] w-8 h-8 md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(150,200,255,0.4)]" style={{ animation: 'float3D-1 25s infinite ease-in-out' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-transparent.png" className="w-full h-full object-contain brightness-125" alt="" />
+            </div>
+            <div className="absolute top-[35%] right-[10%] text-xl md:text-2xl font-black tracking-widest text-white/40 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] hidden md:block" style={{ animation: 'float3D-3 35s infinite ease-in-out' }}>
               ABZY
             </div>
+            <div className="absolute bottom-[30%] left-[15%] text-lg md:text-xl font-bold tracking-widest text-blue-100/30 drop-shadow-[0_0_10px_rgba(150,200,255,0.2)] hidden md:block" style={{ animation: 'float3D-4 40s infinite ease-in-out' }}>
+              ABZY
+            </div>
+          </div>
+
+          {/* FOREGROUND LAYER: Very small subtle floating glass/metallic elements & particles */}
+          <div className="absolute inset-0 opacity-40 motion-reduce:hidden z-0">
+            <div className="absolute top-[50%] left-[8%] w-8 h-8 md:w-10 md:h-10 rounded-lg backdrop-blur-md border border-white/10 bg-white/5 flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.05)]" style={{ animation: 'float3D-1 20s infinite ease-in-out' }}>
+              <span className="text-[10px] font-bold text-white/50 tracking-widest">A</span>
+            </div>
+            <div className="absolute top-[75%] right-[8%] w-10 h-10 md:w-12 md:h-12 rounded-full backdrop-blur-sm border border-white/5 bg-white/5 flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.02)] hidden md:flex" style={{ animation: 'float3D-2 22s infinite ease-in-out reverse' }}>
+              <span className="text-[12px] font-bold text-white/30 tracking-widest">ZY</span>
+            </div>
+            
+            <div className="absolute top-[30%] left-[-10%] w-[40%] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-[35deg]" style={{ animation: 'float3D-3 20s infinite linear' }} />
+            <div className="absolute bottom-[40%] right-[-10%] w-[30%] h-px bg-gradient-to-r from-transparent via-blue-200/10 to-transparent -rotate-[45deg] hidden md:block" style={{ animation: 'float3D-4 25s infinite linear' }} />
+
+            <div className="absolute top-[20%] left-[40%] w-1 h-1 bg-white rounded-full blur-[1px] animate-[pulse_4s_ease-in-out_infinite]" />
+            <div className="absolute top-[80%] left-[30%] w-1 h-1 bg-blue-200 rounded-full blur-[1px] animate-[pulse_5s_ease-in-out_infinite_1s]" />
+            <div className="absolute top-[40%] right-[35%] w-1.5 h-1.5 bg-amber-100 rounded-full blur-[2px] animate-[pulse_6s_ease-in-out_infinite_2s]" />
+            <div className="absolute bottom-[20%] right-[30%] w-1 h-1 bg-white rounded-full blur-[1px] animate-[pulse_3s_ease-in-out_infinite_3s]" />
+            <div className="absolute top-[60%] left-[80%] w-2 h-2 bg-blue-100 rounded-full blur-[2px] animate-[pulse_7s_ease-in-out_infinite]" />
+            <div className="absolute top-[15%] left-[80%] w-1 h-1 bg-white rounded-full blur-[1px] animate-[pulse_5s_ease-in-out_infinite]" />
+            <div className="absolute bottom-[10%] left-[50%] w-1 h-1 bg-amber-100/50 rounded-full blur-[1px] animate-[pulse_6s_ease-in-out_infinite_1s]" />
           </div>
         </div>
 
         <style dangerouslySetInnerHTML={{__html: `
-          @keyframes slowPan {
-            0% { transform: scale(1) translate(0px, 0px); }
-            100% { transform: scale(1.1) translate(20px, -20px); }
-          }
           @keyframes floatLogo {
             0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
             50% { transform: translateY(-8px) rotateX(5deg) rotateY(5deg); }
             100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+          }
+          @keyframes float3D-1 {
+            0% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); }
+            33% { transform: translate3d(20px, -30px, 30px) rotateX(8deg) rotateY(12deg); }
+            66% { transform: translate3d(-15px, 20px, -20px) rotateX(-5deg) rotateY(-8deg); }
+            100% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); }
+          }
+          @keyframes float3D-2 {
+            0% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); }
+            33% { transform: translate3d(-25px, 15px, 40px) rotateX(-10deg) rotateY(5deg); }
+            66% { transform: translate3d(10px, -25px, -30px) rotateX(5deg) rotateY(-10deg); }
+            100% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); }
+          }
+          @keyframes float3D-3 {
+            0% { transform: translate3d(0, 0, 0) rotateZ(0deg) scale(1); }
+            50% { transform: translate3d(15px, 25px, 20px) rotateZ(5deg) scale(1.05); }
+            100% { transform: translate3d(0, 0, 0) rotateZ(0deg) scale(1); }
+          }
+          @keyframes float3D-4 {
+            0% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1); }
+            50% { transform: translate3d(-20px, -20px, 50px) rotateX(15deg) rotateY(-15deg) scale(1.1); }
+            100% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1); }
           }
         `}} />
 
