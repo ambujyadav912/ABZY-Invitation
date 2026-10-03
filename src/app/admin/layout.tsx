@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, PlusCircle, List, Settings } from "lucide-react";
+import { LayoutDashboard, PlusCircle, List, MailOpen, Settings } from "lucide-react";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Create", href: "/admin/create", icon: PlusCircle },
   { name: "Invitations", href: "/admin/invitations", icon: List },
+  { name: "Requests", href: "/admin/requests", icon: MailOpen },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

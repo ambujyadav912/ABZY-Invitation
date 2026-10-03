@@ -1,7 +1,6 @@
 "use client";
 
 import { FadeIn, ScaleReveal } from "@/components/ui/Animation";
-import { Card } from "@/components/ui/Card";
 import { 
   MonitorSmartphone, 
   Smartphone, 
@@ -93,7 +92,7 @@ export default function FounderPage() {
           <FadeIn>
             <h3 className="text-sm font-bold text-ash tracking-[0.3em] uppercase mb-8">About the Founder</h3>
             <p className="text-2xl md:text-3xl lg:text-4xl text-white/90 leading-relaxed font-light mb-12">
-              "Ambuj Shyampat Yadav is a Computer Engineering student, developer, and creator focused on building practical digital products and creative technology experiences."
+              &quot;Ambuj Shyampat Yadav is a Computer Engineering student, developer, and creator focused on building practical digital products and creative technology experiences.&quot;
             </p>
             <p className="text-lg md:text-xl text-ash max-w-2xl mx-auto leading-relaxed">
               His work combines software development, UI/UX thinking, product ideas, and entrepreneurship under the ABZY vision.

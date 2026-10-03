@@ -5,7 +5,13 @@ import crypto from "crypto";
 
 export async function submitRequest(data: Omit<RequestData, "id" | "status" | "createdAt">) {
   const request: RequestData = {
-    ...data,
+    customerName: data.customerName?.trim() || "Guest",
+    email: data.email?.trim() || "",
+    phone: data.phone?.trim() || "",
+    invitationType: data.invitationType?.trim() || "General",
+    eventDate: data.eventDate?.trim() || "",
+    venue: data.venue?.trim() || "",
+    message: data.message?.trim() || "",
     id: crypto.randomUUID(),
     status: "New",
     createdAt: Date.now()

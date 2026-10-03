@@ -2,8 +2,41 @@ import 'server-only';
 import { InvitationData, RequestData, SettingsData } from "./types";
 import { supabaseServer } from "./supabase/server";
 
+// --- DB Row Types ---
+interface InvitationRow {
+  id: string;
+  slug: string;
+  status: InvitationData["status"];
+  type: InvitationData["type"];
+  creator_name: string;
+  recipient_name: string;
+  event_title: string;
+  event_date: string;
+  event_time: string;
+  venue: string;
+  address: string;
+  contact: string;
+  message: string;
+  photo_url: string | null;
+  template: InvitationData["template"];
+  created_at: number | string;
+}
+
+interface RequestRow {
+  id: string;
+  customer_name: string;
+  email: string;
+  phone: string;
+  invitation_type: string;
+  event_date: string;
+  venue: string;
+  message: string;
+  status: RequestData["status"];
+  created_at: number | string;
+}
+
 // --- Mappers ---
-function mapToInvitationData(row: any): InvitationData {
+function mapToInvitationData(row: InvitationRow): InvitationData {
   return {
     id: row.id,
     slug: row.slug,
@@ -24,7 +57,7 @@ function mapToInvitationData(row: any): InvitationData {
   };
 }
 
-function mapFromInvitationData(data: InvitationData): any {
+function mapFromInvitationData(data: InvitationData): InvitationRow {
   return {
     id: data.id,
     slug: data.slug,
@@ -45,7 +78,7 @@ function mapFromInvitationData(data: InvitationData): any {
   };
 }
 
-function mapToRequestData(row: any): RequestData {
+function mapToRequestData(row: RequestRow): RequestData {
   return {
     id: row.id,
     customerName: row.customer_name,
@@ -60,7 +93,7 @@ function mapToRequestData(row: any): RequestData {
   };
 }
 
-function mapFromRequestData(data: RequestData): any {
+function mapFromRequestData(data: RequestData): RequestRow {
   return {
     id: data.id,
     customer_name: data.customerName,
@@ -81,7 +114,7 @@ export const InvitationRepository = {
     const { data, error } = await supabaseServer
       .from('invitations')
       .select('*')
-      .eq('slug', slug)
+      .ilike('slug', slug)
       .eq('status', 'published')
       .limit(1)
       .single();

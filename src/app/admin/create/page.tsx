@@ -3,15 +3,14 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { FadeIn, ScaleReveal } from "@/components/ui/Animation";
 import { InvitationData, InvitationType, TemplateStyle } from "@/lib/types";
 import { createAndPublishInvitation } from "@/app/actions/invitationActions";
 import { InvitationRenderer } from "@/components/invitations/InvitationRenderer";
-import { Check, Copy, ExternalLink, RefreshCw, Grid, Loader2 } from "lucide-react";
+import { Check, Copy, ExternalLink, Grid, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import { getInvitationById } from "@/app/actions/invitationActions";
 
@@ -45,6 +44,41 @@ const TEMPLATES: { id: TemplateStyle, name: string, category: string, color: str
   { id: "neon", name: "Neon", category: "Night / Glass", color: "from-fuchsia-900/50 to-cyan-900/50" },
   { id: "arch", name: "Arch", category: "Architecture / Editorial", color: "from-[#F5F5F0] to-[#E8E8DF] text-black" }
 ];
+
+function compressImage(file: File, maxWidth = 1600, maxHeight = 1600, quality = 0.85): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        } else {
+          resolve(e.target?.result as string);
+        }
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 function CreateInvitationWizardContent() {
   const searchParams = useSearchParams();
@@ -211,14 +245,19 @@ function CreateInvitationWizardContent() {
                   type="file" 
                   accept="image/*" 
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setDetails(prev => ({ ...prev, photoUrl: reader.result as string }));
-                      };
-                      reader.readAsDataURL(file);
+                      try {
+                        const compressed = await compressImage(file);
+                        setDetails(prev => ({ ...prev, photoUrl: compressed }));
+                      } catch {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setDetails(prev => ({ ...prev, photoUrl: reader.result as string }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
                     }
                   }}
                 />
@@ -267,7 +306,7 @@ function CreateInvitationWizardContent() {
 
   if (step === "PREVIEW") {
     const previewData: InvitationData = {
-      id: "preview", slug: "preview", status: "preview", createdAt: Date.now(),
+      id: "preview", slug: "preview", status: "preview", createdAt: 0,
       type, template: selectedTemplate, ...details,
       recipientName: details.recipientName || "Guest"
     };

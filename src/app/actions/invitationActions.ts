@@ -12,16 +12,41 @@ export async function createAndPublishInvitation(data: Omit<InvitationData, "id"
     const existing = await InvitationRepository.getInvitationById(editId);
     if (existing) {
       slug = existing.slug;
+    } else {
+      id = null; // Reset if invalid id was provided
     }
   }
 
   if (!id || !slug) {
     id = crypto.randomUUID();
-    slug = `ABZY-${crypto.randomBytes(3).toString("hex").toUpperCase()}`; // e.g. ABZY-X7K29P
+    let isUnique = false;
+    let attempts = 0;
+    while (!isUnique && attempts < 10) {
+      attempts++;
+      const candidateSlug = `ABZY-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
+      const existing = await InvitationRepository.getInvitationBySlug(candidateSlug);
+      if (!existing) {
+        slug = candidateSlug;
+        isUnique = true;
+      }
+    }
+    if (!slug) {
+      slug = `ABZY-${Date.now().toString(36).toUpperCase()}`;
+    }
   }
   
   const invitation: InvitationData = {
     ...data,
+    creatorName: data.creatorName?.trim() || "ABZY",
+    recipientName: data.recipientName?.trim() || "Guest",
+    eventTitle: data.eventTitle?.trim() || "Untitled Event",
+    date: data.date?.trim() || "",
+    time: data.time?.trim() || "",
+    venue: data.venue?.trim() || "",
+    address: data.address?.trim() || "",
+    contact: data.contact?.trim() || "",
+    message: data.message?.trim() || "",
+    photoUrl: data.photoUrl || undefined,
     id: id as string,
     slug,
     status: "published",

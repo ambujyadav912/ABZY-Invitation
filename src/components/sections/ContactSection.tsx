@@ -16,7 +16,7 @@ export function ContactSection() {
             
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Want an invitation like this?</h2>
             <p className="text-ash text-lg md:text-xl mb-12 max-w-2xl mx-auto">
-              Tell ABZY about your special occasion and we'll create something memorable.
+              Tell ABZY about your special occasion and we&apos;ll create something memorable.
             </p>
 
             <div className="flex flex-col md:flex-row justify-center items-stretch gap-6 mb-12">

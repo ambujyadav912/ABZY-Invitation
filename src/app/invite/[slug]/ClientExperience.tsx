@@ -1,27 +1,40 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { FadeIn, ScaleReveal } from "@/components/ui/Animation";
 import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
 import { InvitationData } from "@/lib/types";
 import { InvitationRenderer } from "@/components/invitations/InvitationRenderer";
 import Link from "next/link";
 
 type Stage = "NAME_ENTRY" | "INTRO" | "INVITATION";
 
-export function ClientExperience({ invitation }: { invitation: InvitationData }) {
-  const [stage, setStage] = useState<Stage>("NAME_ENTRY");
-  const [name, setName] = useState("");
-  const [isMounted, setIsMounted] = useState(false);
+const emptySubscribe = () => () => {};
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+export function ClientExperience({ invitation }: { invitation: InvitationData }) {
+  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+
+  const [name, setName] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(`abzy_guest_${invitation.slug}`) || "";
+    }
+    return "";
+  });
+
+  const [stage, setStage] = useState<Stage>(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem(`abzy_guest_${invitation.slug}`)) {
+      return "INVITATION";
+    }
+    return "NAME_ENTRY";
+  });
 
   const handleNameSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim()) {
+    const trimmed = name.trim();
+    if (trimmed) {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(`abzy_guest_${invitation.slug}`, trimmed);
+      }
       setStage("INTRO");
     }
   };
@@ -43,7 +56,7 @@ export function ClientExperience({ invitation }: { invitation: InvitationData })
           
           <form onSubmit={handleNameSubmit} className="w-full space-y-8 bg-carbon/40 p-8 md:p-12 rounded-[2rem] border border-white/5 backdrop-blur-md shadow-2xl">
             <div className="space-y-4">
-              <label className="block text-xl font-light text-white mb-6">What's your name?</label>
+              <label className="block text-xl font-light text-white mb-6">What&apos;s your name?</label>
               <Input 
                 placeholder="Enter your name" 
                 value={name}
@@ -134,16 +147,14 @@ export function ClientExperience({ invitation }: { invitation: InvitationData })
                 How did you like this invitation?
               </h3>
               
-              <a 
-                href="https://docs.google.com/forms/d/e/1FAIpQLScMockFormId/viewform" // Placeholder Google Form
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Link 
+                href={`/feedback?invite=${invitation.slug}`}
                 className="inline-block"
               >
                 <button className="px-10 py-4 rounded-full border border-white/20 bg-white/5 text-white font-medium hover:bg-white hover:text-obsidian transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.05)] text-sm tracking-widest uppercase">
                   Give Feedback
                 </button>
-              </a>
+              </Link>
             </div>
 
             <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-24" />

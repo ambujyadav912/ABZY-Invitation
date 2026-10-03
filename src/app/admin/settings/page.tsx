@@ -13,22 +13,56 @@ import { Loader2 } from "lucide-react";
 export default function SettingsPage() {
   const [settings, setSettings] = useState<SettingsData | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const reload = () => {
+    setError(null);
+    setRefreshKey((k) => k + 1);
+  };
 
   useEffect(() => {
-    async function load() {
-      setSettings(await getSettingsAction());
-    }
-    load();
-  }, []);
+    let active = true;
+    getSettingsAction()
+      .then((data) => {
+        if (active) setSettings(data);
+      })
+      .catch((err: unknown) => {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Failed to load settings");
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [refreshKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settings) return;
-    setSaving(true);
-    await updateSettingsAction(settings);
-    setSaving(false);
-    alert("Settings saved!");
+    try {
+      setSaving(true);
+      setSaveSuccess(false);
+      await updateSettingsAction(settings);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Failed to save settings");
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <AnimatedBackground />
+        <p className="text-red-400 font-medium">{error}</p>
+        <Button onClick={reload} variant="secondary">Retry</Button>
+      </div>
+    );
+  }
 
   if (!settings) {
     return (
@@ -80,10 +114,13 @@ export default function SettingsPage() {
                 />
               </div>
 
-              <div className="pt-6 border-t border-white/10">
+              <div className="pt-6 border-t border-white/10 flex items-center gap-4">
                 <Button type="submit" disabled={saving}>
                   {saving ? "Saving..." : "Save Settings"}
                 </Button>
+                {saveSuccess && (
+                  <span className="text-green-400 text-sm font-medium">Settings saved successfully!</span>
+                )}
               </div>
             </form>
           </Card>

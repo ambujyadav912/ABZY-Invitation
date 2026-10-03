@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/Card";
 import { FadeIn } from "@/components/ui/Animation";
-import { Users, FileText, Send, MailOpen, Plus, Eye, Edit2, Archive, Loader2 } from "lucide-react";
+import { FileText, Send, MailOpen, Plus, Edit2, Loader2 } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/AnimatedBackground";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
@@ -12,14 +12,39 @@ import { getDashboardStats } from "@/app/actions/adminActions";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<{ total: number; published: number; drafts: number; requests: number; recentInvitations: InvitationData[] } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const reload = () => {
+    setError(null);
+    setRefreshKey((k) => k + 1);
+  };
 
   useEffect(() => {
-    async function load() {
-      const data = await getDashboardStats();
-      setStats(data);
-    }
-    load();
-  }, []);
+    let active = true;
+    getDashboardStats()
+      .then((data) => {
+        if (active) setStats(data);
+      })
+      .catch((err: unknown) => {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Failed to load dashboard statistics");
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [refreshKey]);
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <AnimatedBackground />
+        <p className="text-red-400 font-medium">{error}</p>
+        <Button onClick={reload} variant="secondary">Retry</Button>
+      </div>
+    );
+  }
 
   if (!stats) {
     return (

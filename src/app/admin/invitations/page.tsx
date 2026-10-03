@@ -1,44 +1,67 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FadeIn } from "@/components/ui/Animation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { InvitationData } from "@/lib/types";
 import { getAllInvitations, deleteInvitationAction, updateInvitationStatusAction } from "@/app/actions/adminActions";
 import Link from "next/link";
 import { AnimatedBackground } from "@/components/ui/AnimatedBackground";
-import { Eye, Edit2, Copy, Trash, ExternalLink, Loader2 } from "lucide-react";
+import { Eye, Edit2, Copy, Trash, Loader2 } from "lucide-react";
 
 export default function ManageInvitations() {
   const [invitations, setInvitations] = useState<InvitationData[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const reload = () => {
+    setError(null);
+    setRefreshKey((k) => k + 1);
+  };
 
   useEffect(() => {
-    load();
-  }, []);
-
-  async function load() {
-    const data = await getAllInvitations();
-    setInvitations(data);
-  }
+    let active = true;
+    getAllInvitations()
+      .then((data) => {
+        if (active) setInvitations(data);
+      })
+      .catch((err: unknown) => {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Failed to load invitations");
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [refreshKey]);
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this invitation?")) {
       await deleteInvitationAction(id);
-      load();
+      reload();
     }
   };
 
   const handleStatus = async (id: string, current: string) => {
-    const next = current === "published" ? "draft" : "published";
-    await updateInvitationStatusAction(id, next as any);
-    load();
+    const next: InvitationData["status"] = current === "published" ? "draft" : "published";
+    await updateInvitationStatusAction(id, next);
+    reload();
   };
 
   const copyLink = (slug: string) => {
     navigator.clipboard.writeText(`${window.location.origin}/invite/${slug}`);
     alert("Link copied!");
   };
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <AnimatedBackground />
+        <p className="text-red-400 font-medium">{error}</p>
+        <Button onClick={reload} variant="secondary">Retry</Button>
+      </div>
+    );
+  }
 
   if (!invitations) {
     return (

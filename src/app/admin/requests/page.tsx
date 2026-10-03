@@ -9,24 +9,50 @@ import { getAllRequestsAction, updateRequestStatusAction } from "@/app/actions/r
 import { AnimatedBackground } from "@/components/ui/AnimatedBackground";
 import { Loader2 } from "lucide-react";
 
+const statuses: RequestData["status"][] = ["New", "Contacted", "In Progress", "Completed"];
+
 export default function ViewRequests() {
   const [requests, setRequests] = useState<RequestData[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const reload = () => {
+    setError(null);
+    setRefreshKey((k) => k + 1);
+  };
 
   useEffect(() => {
-    load();
-  }, []);
-
-  async function load() {
-    const data = await getAllRequestsAction();
-    setRequests(data);
-  }
+    let active = true;
+    getAllRequestsAction()
+      .then((data) => {
+        if (active) setRequests(data);
+      })
+      .catch((err: unknown) => {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Failed to load requests");
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [refreshKey]);
 
   const handleStatus = async (id: string, current: string) => {
-    const statuses = ["New", "Contacted", "In Progress", "Completed"];
-    const nextIdx = (statuses.indexOf(current) + 1) % statuses.length;
-    await updateRequestStatusAction(id, statuses[nextIdx] as any);
-    load();
+    const currentIndex = statuses.indexOf(current as RequestData["status"]);
+    const nextIdx = (currentIndex + 1) % statuses.length;
+    await updateRequestStatusAction(id, statuses[nextIdx]);
+    reload();
   };
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 space-y-4">
+        <AnimatedBackground />
+        <p className="text-red-400 font-medium">{error}</p>
+        <Button onClick={reload} variant="secondary">Retry</Button>
+      </div>
+    );
+  }
 
   if (!requests) {
     return (
@@ -86,7 +112,7 @@ export default function ViewRequests() {
                     </div>
 
                     <div className="bg-obsidian/50 p-4 rounded-xl border border-white/5 text-ash mt-4 italic">
-                      "{req.message}"
+                      &quot;{req.message}&quot;
                     </div>
                   </div>
                 </div>
