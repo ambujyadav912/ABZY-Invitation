@@ -114,9 +114,8 @@ export const InvitationRepository = {
     const { data, error } = await supabaseServer
       .from('invitations')
       .select('*')
-      .ilike('slug', slug)
+      .eq('slug', slug)
       .eq('status', 'published')
-      .limit(1)
       .single();
 
     if (error || !data) return null;

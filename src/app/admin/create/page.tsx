@@ -402,7 +402,7 @@ function CreateInvitationWizardContent() {
                  Open Invitation <ExternalLink className="w-4 h-4" />
                </Button>
              </Link>
-             <Button variant="ghost" className="w-full" onClick={() => window.location.reload()}>
+             <Button variant="ghost" className="w-full" onClick={() => window.location.href = '/admin/create'}>
                Create Another
              </Button>
           </div>

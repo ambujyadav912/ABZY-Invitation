@@ -3,6 +3,9 @@ import { Metadata } from "next";
 import { getInvitation } from "@/app/actions/invitationActions";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "You're Invited | ABZY",
   description: "You have received a special digital invitation.",
