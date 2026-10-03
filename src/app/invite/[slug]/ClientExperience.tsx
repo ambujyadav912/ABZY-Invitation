@@ -80,41 +80,120 @@ export function ClientExperience({ invitation }: { invitation: InvitationData })
   }
 
   if (stage === "INTRO") {
+    const isOther = invitation.type.toLowerCase() === "other";
+    const invitationTitle = isOther ? invitation.eventTitle : `${invitation.type} Invitation`;
+
     return (
-      <div className="min-h-[100dvh] bg-obsidian text-white flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-carbon to-obsidian" />
+      <div className="min-h-[100dvh] bg-obsidian text-white flex flex-col items-center justify-center p-6 text-center relative overflow-hidden perspective-1000">
         
-        <div className="relative z-10 space-y-12 max-w-2xl w-full flex flex-col items-center">
-          <FadeIn delay={0.3}>
-            <div className="text-xs uppercase tracking-[0.4em] text-ash mb-4">Created by</div>
-            <div className="text-4xl md:text-5xl font-bold tracking-wider text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+        {/* Background ABZY Animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+          <div className="absolute inset-0 bg-obsidian" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a1a24] via-obsidian to-obsidian" />
+          
+          <div className="absolute top-0 left-0 w-full h-full opacity-30">
+            <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] bg-blue-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite] motion-reduce:animate-none" />
+            <div className="absolute top-[60%] -right-[10%] w-[60vw] h-[60vw] bg-white/5 rounded-full blur-[120px] animate-[pulse_12s_ease-in-out_infinite] motion-reduce:animate-none" />
+          </div>
+
+          <div className="absolute inset-0 opacity-40 motion-reduce:hidden">
+            <div className="absolute top-[20%] left-[30%] w-2 h-2 bg-white rounded-full blur-[2px] animate-[pulse_3s_ease-in-out_infinite]" />
+            <div className="absolute top-[70%] left-[20%] w-1.5 h-1.5 bg-blue-300 rounded-full blur-[1px] animate-[pulse_4s_ease-in-out_infinite_1s]" />
+            <div className="absolute top-[40%] right-[30%] w-2.5 h-2.5 bg-white rounded-full blur-[2px] animate-[pulse_5s_ease-in-out_infinite_2s]" />
+            <div className="absolute bottom-[20%] right-[20%] w-2 h-2 bg-blue-200 rounded-full blur-[2px] animate-[pulse_3s_ease-in-out_infinite_3s]" />
+          </div>
+
+          <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] motion-reduce:opacity-[0.02]">
+            <div 
+              className="text-[35vw] font-black text-white tracking-widest motion-reduce:transform-none"
+              style={{
+                animation: 'slowPan 30s ease-in-out infinite alternate',
+              }}
+            >
+              ABZY
+            </div>
+          </div>
+        </div>
+
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes slowPan {
+            0% { transform: scale(1) translate(0px, 0px); }
+            100% { transform: scale(1.1) translate(20px, -20px); }
+          }
+          @keyframes floatLogo {
+            0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+            50% { transform: translateY(-8px) rotateX(5deg) rotateY(5deg); }
+            100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+          }
+        `}} />
+
+        <div className="relative z-10 space-y-8 max-w-3xl w-full flex flex-col items-center">
+          
+          <FadeIn delay={0.2}>
+            <div className="text-xs md:text-sm uppercase tracking-[0.4em] text-ash font-medium">
+              CREATED BY
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.6}>
+            <div className="text-3xl md:text-4xl font-bold tracking-[0.2em] text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
               ABZY
             </div>
           </FadeIn>
 
-          <FadeIn delay={1.5}>
-            <div className="w-px h-16 bg-gradient-to-b from-white/20 to-transparent mx-auto" />
-          </FadeIn>
-
-          <FadeIn delay={2.5}>
-            <div className="text-xl md:text-2xl text-ash font-light italic">
-              has created something special for
+          <FadeIn delay={1.2}>
+            <div 
+              className="my-2 relative perspective-1000"
+              style={{ perspective: '1000px' }}
+            >
+              <div 
+                className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border border-white/20 shadow-[0_0_40px_rgba(255,255,255,0.15)] motion-reduce:animate-none"
+                style={{
+                  animation: 'floatLogo 6s ease-in-out infinite',
+                  transformStyle: 'preserve-3d'
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/logo.jpg" 
+                  alt="ABZY Logo" 
+                  className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110" 
+                />
+              </div>
             </div>
           </FadeIn>
 
-          <ScaleReveal delay={4.0}>
-            <div className="text-5xl md:text-7xl font-bold text-white tracking-tight uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+          <FadeIn delay={1.8}>
+            <div className="text-xs md:text-sm uppercase tracking-[0.3em] text-blue-100/60 border-b border-blue-100/10 pb-2 px-4">
+              {invitationTitle}
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={2.6}>
+            <div className="text-lg md:text-xl text-ash font-light italic mt-4">
+              <span className="font-medium text-white not-italic">{invitation.creatorName}</span> has created something special for
+            </div>
+          </FadeIn>
+
+          <ScaleReveal delay={3.4}>
+            <div className="text-5xl md:text-7xl font-bold text-white tracking-tight uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.25)] my-2">
               {name}
             </div>
           </ScaleReveal>
 
-          <FadeIn delay={6.0} className="pt-12">
+          <FadeIn delay={4.2}>
+            <div className="text-xs md:text-sm text-ash/80 tracking-[0.2em] uppercase font-light mt-2">
+              An invitation specially prepared for you
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={5.2} className="pt-8">
             <button 
               onClick={() => setStage("INVITATION")}
-              className="group relative px-10 py-5 bg-transparent overflow-hidden rounded-full border border-white/20 hover:border-white transition-all duration-500"
+              className="group relative px-10 py-5 bg-white/5 overflow-hidden rounded-full border border-white/20 hover:border-white/60 transition-all duration-700 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:-translate-y-1 motion-reduce:hover:translate-y-0"
             >
-              <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-              <span className="relative z-10 text-sm font-bold uppercase tracking-[0.3em] text-white group-hover:text-obsidian transition-colors duration-500">
+              <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out motion-reduce:transition-none" />
+              <span className="relative z-10 text-xs md:text-sm font-bold uppercase tracking-[0.3em] text-white group-hover:text-obsidian transition-colors duration-500">
                 View Invitation
               </span>
             </button>
